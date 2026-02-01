@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTB Label Verification System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1e3a8a;
+            --primary-blue-light: #3b82f6;
+            --success-green: #059669;
+            --warning-amber: #d97706;
+            --error-red: #dc2626;
+            --neutral-100: #f8fafc;
+            --neutral-200: #e2e8f0;
+            --neutral-300: #cbd5e1;
+            --neutral-700: #334155;
+            --neutral-800: #1e293b;
+            --neutral-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--neutral-800);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.25rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--neutral-700);
+        }
+
+        .tab:hover {
+            background: var(--neutral-100);
+        }
+
+        .tab.active {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--neutral-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue-light);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--neutral-300);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--neutral-100);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue-light);
+            background: white;
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--primary-blue);
+            background: #eff6ff;
+        }
+
+        .upload-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.875rem;
+            color: var(--neutral-700);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-section {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--neutral-200);
+            background: white;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .preview-name {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--neutral-700);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--error-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-blue-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--neutral-200);
+            color: var(--neutral-800);
+        }
+
+        .btn-secondary:hover {
+            background: var(--neutral-300);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--neutral-200);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--neutral-300);
+        }
+
+        .result-card.approved {
+            border-left-color: var(--success-green);
+        }
+
+        .result-card.rejected {
+            border-left-color: var(--error-red);
+        }
+
+        .result-card.error {
+            border-left-color: var(--warning-amber);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .result-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .result-status.approved {
+            background: #d1fae5;
+            color: var(--success-green);
+        }
+
+        .result-status.rejected {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        .result-status.error {
+            background: #fef3c7;
+            color: var(--warning-amber);
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .result-field {
+            background: var(--neutral-100);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .result-field-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--neutral-700);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-field-value {
+            font-size: 0.9375rem;
+            color: var(--neutral-900);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .result-field-match {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .result-field-match.match {
+            color: var(--success-green);
+        }
+
+        .result-field-match.no-match {
+            color: var(--error-red);
+        }
+
+        .issues-list {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        .issues-title {
+            font-weight: 600;
+            color: var(--warning-amber);
+            margin-bottom: 0.5rem;
+        }
+
+        .issues-list ul {
+            margin-left: 1.5rem;
+        }
+
+        .issues-list li {
+            color: var(--neutral-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .confidence-bar {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--neutral-100);
+            border-radius: 8px;
+        }
+
+        .confidence-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-700);
+        }
+
+        .confidence-progress {
+            height: 8px;
+            background: var(--neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--primary-blue-light));
+            transition: width 0.3s;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--neutral-800);
+        }
+
+        .info-box strong {
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .logo h1 {
+                font-size: 1.25rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">TTB</div>
+                <div>
+                    <h1>Label Verification System</h1>
+                    <div class="logo-subtitle">Alcohol and Tobacco Tax and Trade Bureau</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" data-tab="single">Single Label Review</button>
+            <button class="tab" data-tab="batch">Batch Processing</button>
+        </div>
+
+        <!-- Single Label Tab -->
+        <div id="single-tab" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">Application Information</h2>
+                <div class="info-box">
+                    <strong>Instructions:</strong> Enter the application data from the COLA form. The system will compare the label image against these values.
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Brand Name</label>
+                        <input type="text" class="form-input" id="brand-name" placeholder="e.g., OLD TOM DISTILLERY">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Class/Type</label>
+                        <input type="text" class="form-input" id="class-type" placeholder="e.g., Kentucky Straight Bourbon Whiskey">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Alcohol Content</label>
+                        <input type="text" class="form-input" id="alcohol-content" placeholder="e.g., 45% Alc./Vol. (90 Proof)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Net Contents</label>
+                        <input type="text" class="form-input" id="net-contents" placeholder="e.g., 750 mL">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Upload Label Image</h2>
+                <input type="file" id="single-file-input" class="file-input" accept="image/*">
+                <div class="upload-area" id="single-upload-area">
+                    <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-hint">PNG, JPG, JPEG up to 10MB</div>
+                </div>
+                
+                <div class="preview-section" id="single-preview-section">
+                    <h3 style="margin-bottom: 1rem; font-weight: 600;">Selected Label:</h3>
+                    <div class="preview-grid" id="single-preview"></div>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" id="verify-single-btn" disabled>
+                        <span>Verify Label</span>
+                    </button>
+                    <button class="btn btn-secondary" id="clear-single-btn">Clear</button>
+                </div>
+            </div>
+
+            <div class="loading" id="single-loading">
+                <div class="spinner"></div>
+                <p>Analyzing label...</p>
+            </div>
+
+            <div class="results" id="single-results"></div>
+        </div>
+
+        <!-- Batch Tab -->
+        <div id="batch-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Batch Label Processing</h2>
+                <div class="info-box">
+                    <strong>Batch Mode:</strong> Upload multiple label images at once. Optionally provide application data in CSV format for verification.
+                </div>
+                
+                <input type="file" id="batch-file-input" class="file-input" accept="image/*" multiple>
+                <div class="upload-area" id="batch-upload-area">
+                    <div class="upload-text">Click to upload multiple labels or drag and drop</div>
+                    <div class="upload-hint">Select multiple PNG, JPG, JPEG files (up to 10MB each)</div>
+                </div>
+
+                <div class="preview-section" id="batch-preview-section">
+                    <h3 style="margin-bottom: 1rem; font-weight: 600;">Selected Labels (<span id="batch-count">0</span>):</h3>
+                    <div class="preview-grid" id="batch-preview"></div>
+                </div>
+            </div>
+
+            <div class="card" id="batch-app-data-card" style="display: none;">
+                <h2 class="card-title">Application Data</h2>
+                <div class="info-box">
+                    <strong>Tip:</strong> Paste CSV data or enter one row per label. Format: Brand, Type, ABV, Volume<br>
+                    Example: OLD TOM DISTILLERY, Kentucky Straight Bourbon Whiskey, 45% Alc./Vol., 750 mL
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <button class="btn btn-secondary" id="toggle-batch-data-btn" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                        Show Application Data Entry
+                    </button>
+                </div>
+
+                <div id="batch-data-entry" style="display: none;">
+                    <textarea 
+                        id="batch-app-data-text" 
+                        style="width: 100%; min-height: 200px; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; padding: 1rem; border: 2px solid var(--neutral-200); border-radius: 8px; resize: vertical;"
+                        placeholder="Paste CSV or enter one row per label:&#10;Brand1, Type1, ABV1, Volume1&#10;Brand2, Type2, ABV2, Volume2&#10;Brand3, Type3, ABV3, Volume3"></textarea>
+                    
+                    <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--neutral-700);">
+                        <span id="data-row-count">0</span> rows entered | <span id="image-count">0</span> images uploaded
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="verify-batch-btn" disabled>
+                        <span>Process Batch</span>
+                    </button>
+                    <button class="btn btn-secondary" id="clear-batch-btn">Clear All</button>
+                </div>
+            </div>
+
+            <div class="loading" id="batch-loading">
+                <div class="spinner"></div>
+                <p>Processing batch... <span id="batch-progress"></span></p>
+            </div>
+
+            <div class="results" id="batch-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                // Update tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Single Label functionality
+        let singleFile = null;
+
+        const singleUploadArea = document.getElementById('single-upload-area');
+        const singleFileInput = document.getElementById('single-file-input');
+        const singlePreviewSection = document.getElementById('single-preview-section');
+        const singlePreview = document.getElementById('single-preview');
+        const verifySingleBtn = document.getElementById('verify-single-btn');
+        const clearSingleBtn = document.getElementById('clear-single-btn');
+
+        singleUploadArea.addEventListener('click', () => singleFileInput.click());
+
+        singleUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            singleUploadArea.classList.add('drag-over');
+        });
+
+        singleUploadArea.addEventListener('dragleave', () => {
+            singleUploadArea.classList.remove('drag-over');
+        });
+
+        singleUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            singleUploadArea.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                handleSingleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        singleFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleSingleFile(e.target.files[0]);
+            }
+        });
+
+        function handleSingleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                return;
+            }
+
+            singleFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                singlePreview.innerHTML = `
+                    <div class="preview-item">
+                        <img src="${e.target.result}" alt="Label preview" class="preview-image">
+                        <div class="preview-name">${file.name}</div>
+                    </div>
+                `;
+                singlePreviewSection.classList.add('active');
+                verifySingleBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        clearSingleBtn.addEventListener('click', () => {
+            singleFile = null;
+            singleFileInput.value = '';
+            singlePreview.innerHTML = '';
+            singlePreviewSection.classList.remove('active');
+            verifySingleBtn.disabled = true;
+            document.getElementById('single-results').classList.remove('active');
+            document.getElementById('single-results').innerHTML = '';
+        });
+
+        verifySingleBtn.addEventListener('click', async () => {
+            if (!singleFile) return;
+
+            const formData = new FormData();
+            formData.append('image', singleFile);
+            
+            const applicationData = {
+                brand_name: document.getElementById('brand-name').value,
+                class_type: document.getElementById('class-type').value,
+                alcohol_content: document.getElementById('alcohol-content').value,
+                net_contents: document.getElementById('net-contents').value
+            };
+            
+            formData.append('application_data', JSON.stringify(applicationData));
+
+            const loadingEl = document.getElementById('single-loading');
+            const resultsEl = document.getElementById('single-results');
+            
+            loadingEl.classList.add('active');
+            resultsEl.classList.remove('active');
+            verifySingleBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/verify-label', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                displaySingleResult(result);
+            } catch (error) {
+                resultsEl.innerHTML = `
+                    <div class="result-card error">
+                        <div class="result-status error">[!] Error</div>
+                        <p style="margin-top: 1rem;">Failed to verify label: ${error.message}</p>
+                    </div>
+                `;
+                resultsEl.classList.add('active');
+            } finally {
+                loadingEl.classList.remove('active');
+                verifySingleBtn.disabled = false;
+            }
+        });
+
+        function displaySingleResult(result) {
+            const resultsEl = document.getElementById('single-results');
+            const status = result.overall_status || 'ERROR';
+            const statusClass = status.toLowerCase();
+            
+            let html = `
+                <div class="card">
+                    <div class="result-card ${statusClass}">
+                        <div class="result-header">
+                            <h3 style="font-size: 1.25rem; font-weight: 600;">Verification Result</h3>
+                            <div class="result-status ${statusClass}">
+                                ${status === 'APPROVED' ? '' : status === 'REJECTED' ? '' : '!'} ${status}
+                            </div>
+                        </div>
+            `;
+
+            if (result.extracted) {
+                html += '<div class="result-details">';
+                
+                if (result.extracted.brand_name) {
+                    const match = result.verification?.brand_name_match;
+                    html += `
+                        <div class="result-field">
+                            <div class="result-field-label">Brand Name</div>
+                            <div class="result-field-value">${result.extracted.brand_name}</div>
+                            ${match !== undefined ? `
+                                <div class="result-field-match ${match ? 'match' : 'no-match'}">
+                                    ${match ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                if (result.extracted.class_type) {
+                    const match = result.verification?.class_type_match;
+                    html += `
+                        <div class="result-field">
+                            <div class="result-field-label">Class/Type</div>
+                            <div class="result-field-value">${result.extracted.class_type}</div>
+                            ${match !== undefined ? `
+                                <div class="result-field-match ${match ? 'match' : 'no-match'}">
+                                    ${match ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                if (result.extracted.alcohol_content) {
+                    const match = result.verification?.alcohol_content_match;
+                    html += `
+                        <div class="result-field">
+                            <div class="result-field-label">Alcohol Content</div>
+                            <div class="result-field-value">${result.extracted.alcohol_content}</div>
+                            ${match !== undefined ? `
+                                <div class="result-field-match ${match ? 'match' : 'no-match'}">
+                                    ${match ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                if (result.extracted.net_contents) {
+                    const match = result.verification?.net_contents_match;
+                    html += `
+                        <div class="result-field">
+                            <div class="result-field-label">Net Contents</div>
+                            <div class="result-field-value">${result.extracted.net_contents}</div>
+                            ${match !== undefined ? `
+                                <div class="result-field-match ${match ? 'match' : 'no-match'}">
+                                    ${match ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="result-field">
+                        <div class="result-field-label">Government Warning</div>
+                        <div class="result-field-value">${result.extracted.government_warning_present ? 'Present' : 'Not Found'}</div>
+                        ${result.verification?.government_warning_valid !== undefined ? `
+                            <div class="result-field-match ${result.verification.government_warning_valid ? 'match' : 'no-match'}">
+                                ${result.verification.government_warning_valid ? '[PASS] Valid' : '[FAIL] Invalid'}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                html += '</div>';
+            }
+
+            if (result.issues && result.issues.length > 0) {
+                html += `
+                    <div class="issues-list">
+                        <div class="issues-title">[!] Issues Found:</div>
+                        <ul>
+                            ${result.issues.map(issue => `<li>${issue}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (result.confidence !== undefined) {
+                html += `
+                    <div class="confidence-bar">
+                        <div class="confidence-label">Confidence: ${result.confidence}%</div>
+                        <div class="confidence-progress">
+                            <div class="confidence-fill" style="width: ${result.confidence}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (result.notes) {
+                html += `<p style="margin-top: 1rem; font-style: italic; color: var(--neutral-700);">${result.notes}</p>`;
+            }
+
+            if (result.error) {
+                html += `<p style="margin-top: 1rem; color: var(--error-red);">Error: ${result.error}</p>`;
+            }
+
+            html += '</div></div>';
+            
+            resultsEl.innerHTML = html;
+            resultsEl.classList.add('active');
+        }
+
+        // Batch processing functionality
+        let batchFiles = [];
+
+        const batchUploadArea = document.getElementById('batch-upload-area');
+        const batchFileInput = document.getElementById('batch-file-input');
+        const batchPreviewSection = document.getElementById('batch-preview-section');
+        const batchPreview = document.getElementById('batch-preview');
+        const verifyBatchBtn = document.getElementById('verify-batch-btn');
+        const clearBatchBtn = document.getElementById('clear-batch-btn');
+        const batchCount = document.getElementById('batch-count');
+        const batchAppDataCard = document.getElementById('batch-app-data-card');
+        const toggleBatchDataBtn = document.getElementById('toggle-batch-data-btn');
+        const batchDataEntry = document.getElementById('batch-data-entry');
+        const batchAppDataText = document.getElementById('batch-app-data-text');
+
+        // Toggle application data entry
+        toggleBatchDataBtn.addEventListener('click', () => {
+            if (batchDataEntry.style.display === 'none') {
+                batchDataEntry.style.display = 'block';
+                toggleBatchDataBtn.textContent = 'Hide Application Data Entry';
+            } else {
+                batchDataEntry.style.display = 'none';
+                toggleBatchDataBtn.textContent = 'Show Application Data Entry';
+            }
+        });
+
+        // Update row count as user types
+        batchAppDataText.addEventListener('input', () => {
+            const text = batchAppDataText.value.trim();
+            const rows = text ? text.split('\n').filter(line => line.trim()).length : 0;
+            document.getElementById('data-row-count').textContent = rows;
+        });
+
+        batchUploadArea.addEventListener('click', () => batchFileInput.click());
+
+        batchUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            batchUploadArea.classList.add('drag-over');
+        });
+
+        batchUploadArea.addEventListener('dragleave', () => {
+            batchUploadArea.classList.remove('drag-over');
+        });
+
+        batchUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            batchUploadArea.classList.remove('drag-over');
+            handleBatchFiles(Array.from(e.dataTransfer.files));
+        });
+
+        batchFileInput.addEventListener('change', (e) => {
+            handleBatchFiles(Array.from(e.target.files));
+        });
+
+        function handleBatchFiles(files) {
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
+            batchFiles = [...batchFiles, ...imageFiles];
+            updateBatchPreview();
+            
+            // Show application data card if images uploaded
+            if (batchFiles.length > 0) {
+                batchAppDataCard.style.display = 'block';
+            }
+        }
+
+        function updateBatchPreview() {
+            batchCount.textContent = batchFiles.length;
+            document.getElementById('image-count').textContent = batchFiles.length;
+            
+            if (batchFiles.length === 0) {
+                batchPreviewSection.classList.remove('active');
+                verifyBatchBtn.disabled = true;
+                batchAppDataCard.style.display = 'none';
+                return;
+            }
+
+            batchPreview.innerHTML = '';
+            batchFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Label preview" class="preview-image">
+                        <div class="preview-name">${index + 1}. ${file.name}</div>
+                        <button class="preview-remove" onclick="removeBatchFile(${index})">X</button>
+                    `;
+                    batchPreview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            batchPreviewSection.classList.add('active');
+            verifyBatchBtn.disabled = false;
+        }
+
+        window.removeBatchFile = function(index) {
+            batchFiles.splice(index, 1);
+            updateBatchPreview();
+        };
+
+        clearBatchBtn.addEventListener('click', () => {
+            batchFiles = [];
+            batchFileInput.value = '';
+            batchAppDataText.value = '';
+            updateBatchPreview();
+            document.getElementById('batch-results').classList.remove('active');
+            document.getElementById('batch-results').innerHTML = '';
+            batchDataEntry.style.display = 'none';
+            toggleBatchDataBtn.textContent = 'Show Application Data Entry';
+        });
+
+        function parseApplicationData() {
+            const text = batchAppDataText.value.trim();
+            if (!text) return [];
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            const data = [];
+            
+            lines.forEach(line => {
+                // Split by comma, handling quotes
+                const parts = line.split(',').map(p => p.trim());
+                
+                if (parts.length >= 4) {
+                    data.push({
+                        brand_name: parts[0],
+                        class_type: parts[1],
+                        alcohol_content: parts[2],
+                        net_contents: parts[3]
+                    });
+                } else if (parts.length > 0) {
+                    // Partial data
+                    data.push({
+                        brand_name: parts[0] || '',
+                        class_type: parts[1] || '',
+                        alcohol_content: parts[2] || '',
+                        net_contents: parts[3] || ''
+                    });
+                }
+            });
+            
+            return data;
+        }
+
+        verifyBatchBtn.addEventListener('click', async () => {
+            if (batchFiles.length === 0) return;
+
+            const formData = new FormData();
+            batchFiles.forEach(file => {
+                formData.append('images[]', file);
+            });
+
+            // Parse and add application data if provided
+            const applicationsData = parseApplicationData();
+            if (applicationsData.length > 0) {
+                formData.append('applications_data', JSON.stringify(applicationsData));
+            }
+
+            const loadingEl = document.getElementById('batch-loading');
+            const resultsEl = document.getElementById('batch-results');
+            const progressEl = document.getElementById('batch-progress');
+            
+            loadingEl.classList.add('active');
+            resultsEl.classList.remove('active');
+            verifyBatchBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/verify-batch', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                displayBatchResults(data.results);
+            } catch (error) {
+                resultsEl.innerHTML = `
+                    <div class="result-card error">
+                        <div class="result-status error">Error</div>
+                        <p style="margin-top: 1rem;">Failed to process batch: ${error.message}</p>
+                    </div>
+                `;
+                resultsEl.classList.add('active');
+            } finally {
+                loadingEl.classList.remove('active');
+                verifyBatchBtn.disabled = false;
+            }
+        });
+
+        function displayBatchResults(results) {
+            const resultsEl = document.getElementById('batch-results');
+            
+            let html = '<div class="card"><h2 class="card-title">Batch Results</h2>';
+            
+            const approved = results.filter(r => r.overall_status === 'APPROVED').length;
+            const rejected = results.filter(r => r.overall_status === 'REJECTED').length;
+
+            html += `
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="flex: 1; padding: 1rem; background: #d1fae5; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--success-green);">${approved}</div>
+                        <div style="font-size: 0.875rem; color: var(--neutral-700);">Approved</div>
+                    </div>
+                    <div style="flex: 1; padding: 1rem; background: #fee2e2; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--error-red);">${rejected}</div>
+                        <div style="font-size: 0.875rem; color: var(--neutral-700);">Rejected</div>
+                    </div>
+                </div>
+            `;
+
+            results.forEach((result, index) => {
+                const status = result.overall_status || 'ERROR';
+                const statusClass = status.toLowerCase();
+                
+                html += `
+                    <div class="result-card ${statusClass}">
+                        <div class="result-header">
+                            <h3 style="font-size: 1rem; font-weight: 600;">${result.filename || `Label ${index + 1}`}</h3>
+                            <div class="result-status ${statusClass}">
+                                ${status === 'APPROVED' ? '[PASS]' : status === 'REJECTED' ? '[FAIL]' : '[!]'} ${status}
+                            </div>
+                        </div>
+                `;
+
+                if (result.extracted) {
+                    html += '<div class="result-details" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">';
+                    
+                    // Brand Name
+                    if (result.extracted.brand_name) {
+                        const brandMatch = result.verification?.brand_name_match;
+                        html += `
+                            <div class="result-field">
+                                <div class="result-field-label">Brand Name</div>
+                                <div class="result-field-value" style="font-size: 0.875rem;">${result.extracted.brand_name}</div>
+                                ${brandMatch !== undefined ? `
+                                    <div class="result-field-match ${brandMatch ? 'match' : 'no-match'}">
+                                        ${brandMatch ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+
+                    // Class/Type
+                    if (result.extracted.class_type) {
+                        const typeMatch = result.verification?.class_type_match;
+                        html += `
+                            <div class="result-field">
+                                <div class="result-field-label">Class/Type</div>
+                                <div class="result-field-value" style="font-size: 0.875rem;">${result.extracted.class_type}</div>
+                                ${typeMatch !== undefined ? `
+                                    <div class="result-field-match ${typeMatch ? 'match' : 'no-match'}">
+                                        ${typeMatch ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+
+                    // Alcohol Content
+                    if (result.extracted.alcohol_content) {
+                        const abvMatch = result.verification?.alcohol_content_match;
+                        html += `
+                            <div class="result-field">
+                                <div class="result-field-label">Alcohol Content</div>
+                                <div class="result-field-value" style="font-size: 0.875rem;">${result.extracted.alcohol_content}</div>
+                                ${abvMatch !== undefined ? `
+                                    <div class="result-field-match ${abvMatch ? 'match' : 'no-match'}">
+                                        ${abvMatch ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+
+                    // Net Contents
+                    if (result.extracted.net_contents) {
+                        const volumeMatch = result.verification?.net_contents_match;
+                        html += `
+                            <div class="result-field">
+                                <div class="result-field-label">Net Contents</div>
+                                <div class="result-field-value" style="font-size: 0.875rem;">${result.extracted.net_contents}</div>
+                                ${volumeMatch !== undefined ? `
+                                    <div class="result-field-match ${volumeMatch ? 'match' : 'no-match'}">
+                                        ${volumeMatch ? '[PASS] Match' : '[FAIL] Mismatch'}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+
+                    // Government Warning
+                    const warningValid = result.verification?.government_warning_valid;
+                    html += `
+                        <div class="result-field">
+                            <div class="result-field-label">Government Warning</div>
+                            <div class="result-field-value" style="font-size: 0.875rem;">${result.extracted.government_warning_present ? 'Present' : 'Missing'}</div>
+                            ${warningValid !== undefined ? `
+                                <div class="result-field-match ${warningValid ? 'match' : 'no-match'}">
+                                    ${warningValid ? '[PASS] Valid' : '[FAIL] Invalid'}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    html += '</div>';
+                }
+
+                if (result.issues && result.issues.length > 0) {
+                    html += `
+                        <div style="margin-top: 1rem; font-size: 0.875rem; color: var(--error-red);">
+                            ${result.issues.join('; ')}
+                        </div>
+                    `;
+                }
+
+                if (result.error) {
+                    html += `<p style="margin-top: 1rem; color: var(--error-red); font-size: 0.875rem;">Error: ${result.error}</p>`;
+                }
+
+                html += '</div>';
+            });
+
+            html += '</div>';
+            
+            resultsEl.innerHTML = html;
+            resultsEl.classList.add('active');
+        }
+    </script>
+</body>
+</html>
