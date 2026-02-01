@@ -571,6 +571,7 @@
                 </div>
             </div>
 
+            <!-- Image Upload -->
             <div class="card">
                 <h2 class="card-title">Upload Label Image</h2>
                 <input type="file" id="single-file-input" class="file-input" accept="image/*">
@@ -592,11 +593,13 @@
                 </div>
             </div>
 
+             <!-- Loading indicator shown during API call -->
             <div class="loading" id="single-loading">
                 <div class="spinner"></div>
                 <p>Analyzing label...</p>
             </div>
 
+            <!-- Results container (populated by JavaScript) -->
             <div class="results" id="single-results"></div>
         </div>
 
@@ -608,6 +611,7 @@
                     <strong>Batch Mode:</strong> Upload multiple label images at once. Optionally provide application data in CSV format for verification.
                 </div>
                 
+                <!-- Multi-file upload -->
                 <input type="file" id="batch-file-input" class="file-input" accept="image/*" multiple>
                 <div class="upload-area" id="batch-upload-area">
                     <div class="upload-text">Click to upload multiple labels or drag and drop</div>
@@ -620,6 +624,7 @@
                 </div>
             </div>
 
+            <!-- CSV application data for batch comparison -->
             <div class="card" id="batch-app-data-card" style="display: none;">
                 <h2 class="card-title">Application Data</h2>
                 <div class="info-box">
@@ -691,8 +696,10 @@
         const verifySingleBtn = document.getElementById('verify-single-btn');
         const clearSingleBtn = document.getElementById('clear-single-btn');
 
+        // Click-to-upload
         singleUploadArea.addEventListener('click', () => singleFileInput.click());
 
+        // Drag-and-drop support
         singleUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             singleUploadArea.classList.add('drag-over');
@@ -716,6 +723,8 @@
             }
         });
 
+        // Handle single file selection
+        // Shows preview and enables verify button
         function handleSingleFile(file) {
             if (!file.type.startsWith('image/')) {
                 alert('Please select an image file');
@@ -738,6 +747,7 @@
             reader.readAsDataURL(file);
         }
 
+        // Clear/reset single label form
         clearSingleBtn.addEventListener('click', () => {
             singleFile = null;
             singleFileInput.value = '';
@@ -748,12 +758,15 @@
             document.getElementById('single-results').innerHTML = '';
         });
 
+        // Submit single label for verification
+        // Sends image and application data to backend API
         verifySingleBtn.addEventListener('click', async () => {
             if (!singleFile) return;
 
             const formData = new FormData();
             formData.append('image', singleFile);
             
+            // Collect application data from form inputs
             const applicationData = {
                 brand_name: document.getElementById('brand-name').value,
                 class_type: document.getElementById('class-type').value,
@@ -792,6 +805,8 @@
             }
         });
 
+        // Render single label verification result
+        // Shows extracted values, match status, and issues
         function displaySingleResult(result) {
             const resultsEl = document.getElementById('single-results');
             const status = result.overall_status || 'ERROR';
@@ -811,6 +826,7 @@
             if (result.extracted) {
                 html += '<div class="result-details">';
                 
+                // Brand Name 
                 if (result.extracted.brand_name) {
                     const match = result.verification?.brand_name_match;
                     html += `
@@ -826,6 +842,7 @@
                     `;
                 }
 
+                // Class/Type
                 if (result.extracted.class_type) {
                     const match = result.verification?.class_type_match;
                     html += `
@@ -841,6 +858,7 @@
                     `;
                 }
 
+                // Alcohol Content
                 if (result.extracted.alcohol_content) {
                     const match = result.verification?.alcohol_content_match;
                     html += `
@@ -856,6 +874,7 @@
                     `;
                 }
 
+                // Net Contents
                 if (result.extracted.net_contents) {
                     const match = result.verification?.net_contents_match;
                     html += `
@@ -871,6 +890,7 @@
                     `;
                 }
 
+                // Government Warning
                 html += `
                     <div class="result-field">
                         <div class="result-field-label">Government Warning</div>
@@ -897,6 +917,7 @@
                 `;
             }
 
+            // AI confidence indicator
             if (result.confidence !== undefined) {
                 html += `
                     <div class="confidence-bar">
@@ -955,6 +976,7 @@
             document.getElementById('data-row-count').textContent = rows;
         });
 
+        // Batch upload: click and drag-drop handlers
         batchUploadArea.addEventListener('click', () => batchFileInput.click());
 
         batchUploadArea.addEventListener('dragover', (e) => {
@@ -976,6 +998,8 @@
             handleBatchFiles(Array.from(e.target.files));
         });
 
+        // Handle multiple file selection for batch processing
+        // Accumulates files (allows multiple drag-drops)
         function handleBatchFiles(files) {
             const imageFiles = files.filter(f => f.type.startsWith('image/'));
             batchFiles = [...batchFiles, ...imageFiles];
@@ -1034,6 +1058,8 @@
             toggleBatchDataBtn.textContent = 'Show Application Data Entry';
         });
 
+        // Parse CSV-format application data
+        // Format: Brand, Type, ABV, Volume (one per line)
         function parseApplicationData() {
             const text = batchAppDataText.value.trim();
             if (!text) return [];
@@ -1066,6 +1092,8 @@
             return data;
         }
 
+        // Submit batch for processing
+        // Sends all images and CSV data to backend
         verifyBatchBtn.addEventListener('click', async () => {
             if (batchFiles.length === 0) return;
 
@@ -1130,7 +1158,8 @@
                     </div>
                 </div>
             `;
-
+            
+            // Individual results for each label
             results.forEach((result, index) => {
                 const status = result.overall_status || 'ERROR';
                 const statusClass = status.toLowerCase();

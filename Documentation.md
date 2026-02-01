@@ -21,7 +21,7 @@ Individual results for each label in the batch
 
 Approach and stakeholder needs addressed:
 Fast response time - Optimized image preprocessing, single API call design, low-latency Azure OpenAI integration
-Batch Processing - Dedicated batch tab supporting multiple simultaneous uploads with CSV application data
+Batch Processing - Dedicated batch tab supporting multiple simultaneous uploads with CSV application data. This allows direct for copy and paste of data from spreadsheet or manual input of rows
 Simple UI - Minimal interface with straightforward buttons, drag-and-drop upload, clear visual feedback
 Flexible field matching - Using AI, matching requirements are not as strict for small formatting variation except for the "GOVERNMENT WARNING," which needs to be exact
 Imperfect image handling - ChatGPT-4o's model is trained to handle different image conditions and quality

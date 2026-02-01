@@ -23,11 +23,11 @@ client = AzureOpenAI(
     azure_endpoint=os.environ.get('AZURE_OPENAI_ENDPOINT')
 )
 
+# Standard government warning
 STANDARD_WARNING = """GOVERNMENT WARNING: (1) ACCORDING TO THE SURGEON GENERAL, WOMEN SHOULD NOT DRINK ALCOHOLIC BEVERAGES DURING PREGNANCY BECAUSE OF THE RISK OF BIRTH DEFECTS. (2) CONSUMPTION OF ALCOHOLIC BEVERAGES IMPAIRS YOUR ABILITY TO DRIVE A CAR OR OPERATE MACHINERY, AND MAY CAUSE HEALTH PROBLEMS."""
 
-
 def verify_label_with_gpt4_vision(image_data, application_data):
-    """Use Azure OpenAI GPT-4 Vision to extract and verify label information."""
+    """Use Azure OpenAI GPT-4o to extract and verify label information."""
     try:
         prompt = f"""You are an expert TTB (Alcohol and Tobacco Tax and Trade Bureau) compliance agent reviewing an alcohol beverage label.
 
@@ -209,6 +209,7 @@ def verify_batch():
         
         results = []
         
+        # Process each image sequentially
         for idx, image_file in enumerate(image_files):
             try:
                 image_base64 = process_image(image_file)
@@ -218,7 +219,7 @@ def verify_batch():
                 result['filename'] = image_file.filename
                 result['index'] = idx
                 results.append(result)
-                
+    
             except Exception as e:
                 results.append({
                     'filename': image_file.filename,
